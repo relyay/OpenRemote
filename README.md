@@ -1,29 +1,33 @@
 # OpenRemote
 
-A host on the computer shows games an Xbox 360 pad. A controller on the phone sends that pad over the LAN.
+OpenRemote is a gamepad that lives on two devices. The computer pretends to have an Xbox 360 controller plugged in. The phone is the thing you actually hold. They talk over the local network, and the game never has to know that the pad is not sitting on the desk.
 
-## Compatibility
+You start the host, it prints a QR code, and the phone joins by scanning it or by typing the address. From there the phone is the controller: face buttons, sticks, triggers, a d-pad, and the layouts you arrange yourself. Standard keeps the usual Xbox arrangement. Lefty mirrors the clusters for the other hand. Your own layouts stay on the phone and can be passed around as an XML file.
 
-| Platform | Role | Status |
+Presses are sent as they happen. A lost Wi-Fi packet does not freeze the next one, because the pad state also travels over UDP. The connection itself stays on a WebSocket, so the computer knows when the phone has left and can let go of every button.
+
+## Where it runs
+
+The idea is the same on every platform. The pad that games can see exists today only on Linux. The controller you can install today is the iOS app, and it needs iOS 26.
+
+| Platform | Role | Now |
 | --- | --- | --- |
-| Linux | Host | Works |
-| Windows | Host | Builds, pad is not implemented |
-| macOS | Host | Builds, pad is not implemented |
-| iOS | Controller | Works, iOS 26 |
-| Android | Controller | Not started |
+| Linux | Host | Works. Needs a writable `/dev/uinput`, or `sudo`. |
+| Windows | Host | Builds. Exits, because there is no pad backend yet. |
+| macOS | Host | Builds for Apple Silicon. Same limit as Windows. |
+| iOS | Controller | Works. Unsigned IPA, bundle ID `ru.relya.openremote`. |
+| Android | Controller | Not started. |
 
 ## Build
 
-Output is in `dist/`.
+Go builds the host. The iOS app needs [xtool](https://github.com/xtool-org/xtool). Results go to `dist/`.
 
-| Command | Result |
+| Command | File |
 | --- | --- |
 | `make` or `make linux` | `dist/openremote-linux-amd64` |
 | `make windows` | `dist/openremote-windows-amd64.exe` |
 | `make macos` | `dist/openremote-macos-arm64` |
 | `make ios` | `dist/OpenRemote.ipa` |
-
-The host needs Go. The iOS app needs [xtool](https://github.com/xtool-org/xtool).
 
 ## Run
 
@@ -32,6 +36,6 @@ The host needs Go. The iOS app needs [xtool](https://github.com/xtool-org/xtool)
 ./dist/openremote-linux-amd64 -addr 0.0.0.0:1337
 ```
 
-The host prints a QR code and `ip:port`. The controller scans the code or enters the address. One controller owns the pad.
+The terminal shows the QR code and `ip:port`. One phone owns the pad. When it disconnects, the pad returns to rest.
 
-On Linux, `/dev/uinput` must be writable (`sudo` if it is not). Windows and macOS hosts exit until a pad backend exists. Install `dist/OpenRemote.ipa` to use the iOS controller.
+Install `dist/OpenRemote.ipa` with your usual sideload tool. The phone screens are portrait. The pad itself is landscape.
