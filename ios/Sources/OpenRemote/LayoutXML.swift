@@ -2,6 +2,11 @@ import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
 
+extension UTType {
+    /// `UTType.xml` makes the iOS document picker select folders. This is a flat file.
+    static let openRemoteLayout: UTType = UTType(filenameExtension: "xml", conformingTo: .data) ?? .data
+}
+
 enum LayoutXML {
     static func encode(
         name: String,
@@ -98,7 +103,7 @@ private final class LayoutXMLReader: NSObject, XMLParserDelegate {
 }
 
 struct LayoutXMLFile: FileDocument {
-    static var readableContentTypes: [UTType] { [.xml] }
+    static var readableContentTypes: [UTType] { [.openRemoteLayout] }
 
     var text: String
 

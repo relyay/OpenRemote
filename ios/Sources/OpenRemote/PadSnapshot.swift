@@ -80,11 +80,12 @@ struct PadSnapshot: Equatable, Sendable {
 }
 
 func deadzone(_ x: Double, _ y: Double) -> (Double, Double) {
-    let dead = 0.14
+    let dead = AppSettings.stickDeadzone
     let mag = hypot(x, y)
     if mag < dead || mag == 0 { return (0, 0) }
-    let scale = min(1, (mag - dead) / (1 - dead)) / mag
-    return (x * scale, y * scale)
+    let scaled = min(1, (mag - dead) / (1 - dead))
+    let curved = pow(scaled, AppSettings.stickCurve)
+    return (x * curved / mag, y * curved / mag)
 }
 
 private func axis(_ value: Double) -> Int16 {

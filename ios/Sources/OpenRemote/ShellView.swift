@@ -25,6 +25,10 @@ struct MainShell: View {
     @State private var importFailed = false
     @AppStorage("haptics") private var haptics = true
     @AppStorage("hapticIntensity") private var hapticIntensity = 1.0
+    @AppStorage("holdTimeout") private var holdTimeout = 0.7
+    @AppStorage("stickClickTimeout") private var stickClickTimeout = 0.16
+    @AppStorage("stickDeadzone") private var stickDeadzone = 0.14
+    @AppStorage("stickCurve") private var stickCurve = 1.0
 
     var body: some View {
         Group {
@@ -54,10 +58,10 @@ struct MainShell: View {
         .fileExporter(
             isPresented: $exporting,
             document: exportDocument,
-            contentType: .xml,
+            contentType: .openRemoteLayout,
             defaultFilename: exportName
         ) { _ in }
-        .fileImporter(isPresented: $importing, allowedContentTypes: [.xml], onCompletion: importFile)
+        .fileImporter(isPresented: $importing, allowedContentTypes: [.openRemoteLayout], onCompletion: importFile)
         .alert(L10n.importFailed, isPresented: $importFailed) {
             Button(L10n.done, role: .cancel) {}
         }
@@ -146,6 +150,54 @@ struct MainShell: View {
                     .disabled(!haptics)
                 } header: {
                     Text(L10n.haptics)
+                }
+                Section {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(L10n.confirmHold)
+                            Spacer()
+                            Text(L10n.seconds(holdTimeout))
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        Slider(value: $holdTimeout, in: 0.2...2)
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(L10n.stickClick)
+                            Spacer()
+                            Text(L10n.seconds(stickClickTimeout))
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        Slider(value: $stickClickTimeout, in: 0.05...0.8)
+                    }
+                } header: {
+                    Text(L10n.timeouts)
+                }
+                Section {
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(L10n.deadzone)
+                            Spacer()
+                            Text("\(Int((stickDeadzone * 100).rounded()))%")
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        Slider(value: $stickDeadzone, in: 0...0.4)
+                    }
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            Text(L10n.stickCurve)
+                            Spacer()
+                            Text(String(format: "%.1f", stickCurve))
+                                .foregroundStyle(.secondary)
+                                .monospacedDigit()
+                        }
+                        Slider(value: $stickCurve, in: 1...3)
+                    }
+                } header: {
+                    Text(L10n.sticks)
                 }
             }
             .listStyle(.insetGrouped)

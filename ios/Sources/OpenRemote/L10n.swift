@@ -55,6 +55,15 @@ enum L10n {
     static var settings: String { t("Settings", "Настройки") }
     static var haptics: String { t("Haptics", "Виброотклик") }
     static var intensity: String { t("Intensity", "Интенсивность") }
+    static var timeouts: String { t("Timeouts", "Таймауты") }
+    static var confirmHold: String { t("Exit and layout", "Выход и раскладка") }
+    static var stickClick: String { t("L3 and R3", "L3 и R3") }
+    static var sticks: String { t("Sticks", "Стики") }
+    static var deadzone: String { t("Dead zone", "Мёртвая зона") }
+    static var stickCurve: String { t("Curve", "Кривая") }
+    static func seconds(_ value: Double) -> String {
+        String(format: t("%.2f s", "%.2f с"), value)
+    }
     static var play: String { t("Play", "Играть") }
     static var edit: String { t("Edit", "Изменить") }
     static var createLayout: String { t("New layout", "Новая раскладка") }

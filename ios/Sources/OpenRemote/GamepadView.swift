@@ -1,3 +1,4 @@
+import CoreHaptics
 import SwiftUI
 import UIKit
 
@@ -53,15 +54,6 @@ struct GamepadView: View {
 
     private var layoutPanel: some View {
         HStack(spacing: 8) {
-            Menu {
-                ForEach(LayoutStore.controlIDs.sorted(), id: \.self) { kind in
-                    Button(L10n.controlName(kind)) { layout.add(kind) }
-                }
-            } label: {
-                Image(systemName: "plus")
-            }
-            .buttonStyle(.glass)
-            .controlSize(.small)
             if let id = layout.selected {
                 Text(L10n.controlName(layout.kind(of: id)))
                     .font(.footnote.weight(.semibold))
@@ -71,17 +63,33 @@ struct GamepadView: View {
                     get: { layout.slot(id).scale },
                     set: { layout.setItemScale(id, $0) }
                 ), in: 0.45...2)
+            }
+            Menu {
+                ForEach(LayoutStore.controlIDs.sorted(), id: \.self) { kind in
+                    Button(L10n.controlName(kind)) { layout.add(kind) }
+                }
+            } label: {
+                Image(systemName: "plus")
+                    .frame(width: 22, height: 22)
+            }
+            .buttonStyle(.glass)
+            .controlSize(.small)
+            .accessibilityLabel(L10n.addControl)
+            if let id = layout.selected {
                 Button {
                     silence(id)
                     layout.remove(id)
                 } label: {
-                    Image(systemName: "minus")
+                    Image(systemName: "trash")
+                        .frame(width: 22, height: 22)
                 }
                 .buttonStyle(.glass)
                 .controlSize(.small)
+                .accessibilityLabel(L10n.removeControl)
             }
             Button(action: layout.reset) {
                 Image(systemName: "arrow.counterclockwise")
+                    .frame(width: 22, height: 22)
             }
             .buttonStyle(.glass)
             .controlSize(.small)
@@ -289,24 +297,65 @@ private struct HoldControl: View {
 }
 
 enum Haptics {
+    @MainActor private static var engine: CHHapticEngine?
+
     @MainActor
     static func play() {
         let defaults = UserDefaults.standard
         let enabled = defaults.object(forKey: "haptics") as? Bool ?? true
         guard enabled else { return }
         let raw = defaults.object(forKey: "hapticIntensity") as? Double ?? 1
-        let amount = min(1, max(0, raw))
+        let amount = Float(min(1, max(0, raw)))
         guard amount > 0.02 else { return }
-        let style: UIImpactFeedbackGenerator.FeedbackStyle
-        if amount > 0.66 {
-            style = .heavy
-        } else if amount > 0.33 {
-            style = .medium
-        } else {
-            style = .light
+        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        do {
+            let engine = try runningEngine()
+            let intensity = CHHapticEventParameter(parameterID: .hapticIntensity, value: amount)
+            let sharpness = CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.6)
+            let event = CHHapticEvent(eventType: .hapticTransient, parameters: [intensity, sharpness], relativeTime: 0)
+            let pattern = try CHHapticPattern(events: [event], parameters: [])
+            let player = try engine.makePlayer(with: pattern)
+            try player.start(atTime: CHHapticTimeImmediate)
+        } catch {
+            engine = nil
         }
-        let generator = UIImpactFeedbackGenerator(style: style)
-        generator.impactOccurred(intensity: CGFloat(amount))
+    }
+
+    @MainActor
+    private static func runningEngine() throws -> CHHapticEngine {
+        if let engine { return engine }
+        let created = try CHHapticEngine()
+        created.isAutoShutdownEnabled = false
+        created.resetHandler = {
+            Task { @MainActor in
+                engine = nil
+            }
+        }
+        try created.start()
+        engine = created
+        return created
+    }
+}
+
+enum AppSettings {
+    static var holdTimeout: TimeInterval {
+        let raw = UserDefaults.standard.object(forKey: "holdTimeout") as? Double ?? 0.7
+        return min(2, max(0.2, raw))
+    }
+
+    static var stickClickTimeout: TimeInterval {
+        let raw = UserDefaults.standard.object(forKey: "stickClickTimeout") as? Double ?? 0.16
+        return min(0.8, max(0.05, raw))
+    }
+
+    static var stickDeadzone: Double {
+        let raw = UserDefaults.standard.object(forKey: "stickDeadzone") as? Double ?? 0.14
+        return min(0.5, max(0, raw))
+    }
+
+    static var stickCurve: Double {
+        let raw = UserDefaults.standard.object(forKey: "stickCurve") as? Double ?? 1
+        return min(3, max(1, raw))
     }
 }
 
@@ -445,7 +494,7 @@ private struct HoldCloseButton: View {
     @State private var holding = false
     @State private var started: Date?
 
-    private let duration: TimeInterval = 0.7
+    private var duration: TimeInterval { AppSettings.holdTimeout }
 
     var body: some View {
         Image(systemName: symbol)

@@ -240,7 +240,7 @@ private final class StickRecognizer: UIGestureRecognizer {
             self.onClick(true)
         }
         clickWork = work
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.16, execute: work)
+        DispatchQueue.main.asyncAfter(deadline: .now() + AppSettings.stickClickTimeout, execute: work)
     }
 
     private func end(_ touches: Set<UITouch>, cancelled: Bool) {
