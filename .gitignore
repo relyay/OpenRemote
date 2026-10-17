@@ -1,3 +1,4 @@
 /openremote
 /dist/
 *.test
+.build
