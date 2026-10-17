@@ -1,7 +1,3 @@
-# Хост с виртуальным геймпадом: linux, windows, macos.
-# Приложение-контроллер: ios.
-# Геймпад в ядре есть только у linux. windows и macos собираются и сразу сообщают об этом.
-
 .PHONY: linux windows macos ios clean
 
 GO ?= go
