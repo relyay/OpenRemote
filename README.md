@@ -22,10 +22,10 @@ Go builds the host. The iOS app needs [xtool](https://github.com/xtool-org/xtool
 
 | Command | File |
 | --- | --- |
-| `make` or `make linux` | `dist/openremote-linux-amd64` |
-| `make windows` | `dist/openremote-windows-amd64.exe` |
-| `make macos` | `dist/openremote-macos-arm64` |
-| `make ios` | `dist/OpenRemote.ipa` |
+| `just` or `just linux` | `dist/openremote-linux-amd64` |
+| `just windows` | `dist/openremote-windows-amd64.exe` |
+| `just macos` | `dist/openremote-macos-arm64` |
+| `just ios` | `dist/OpenRemote.ipa` |
 
 ## Run
 
