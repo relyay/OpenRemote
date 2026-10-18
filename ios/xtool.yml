@@ -2,3 +2,4 @@ version: 1
 bundleID: ru.relya.openremote
 product: OpenRemote
 infoPath: Info.plist
+iconPath: Resources/AppIcon.png

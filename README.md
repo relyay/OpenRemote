@@ -36,5 +36,3 @@ Go builds the host. The iOS app needs [xtool](https://github.com/xtool-org/xtool
 ```
 
 The terminal shows the QR code and `ip:port`. One phone owns the pad. When it disconnects, the pad returns to rest.
-
-Install `dist/OpenRemote.ipa` with your usual sideload tool. The phone screens are portrait. The pad itself is landscape.
