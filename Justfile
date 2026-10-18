@@ -20,3 +20,4 @@ ios:
 
 clean:
     rm -rf {{dist}}
+    
