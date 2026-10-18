@@ -4,6 +4,9 @@ OpenRemote is a gamepad that lives on two devices. The computer pretends to have
 
 You start the host, it prints a QR code, and the phone joins by scanning it or by typing the address. From there the phone is the controller: face buttons, sticks, triggers, a d-pad, and the layouts you arrange yourself. Standard keeps the usual Xbox arrangement. Lefty mirrors the clusters for the other hand. Your own layouts stay on the phone and can be passed around as an XML file.
 
+<img width="276" height="597" alt="1" src="https://github.com/user-attachments/assets/d99c6c2a-e736-4e82-be9d-a8900d98cca0" />
+<img width="597" height="276" alt="2" src="https://github.com/user-attachments/assets/642c00ed-6249-499c-9658-947c1ae158b6" />
+
 ## Where it runs
 
 The idea is the same on every platform. The pad that games can see exists today only on Linux. The controller you can install today is the iOS app, and it needs iOS 26.
