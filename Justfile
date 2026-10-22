@@ -18,6 +18,11 @@ ios:
     mkdir -p {{dist}}
     cp -f ios/xtool/OpenRemote.ipa {{dist}}/OpenRemote.ipa
 
+android:
+    cd android && ./gradlew assembleRelease
+    mkdir -p {{dist}}
+    cp -f android/app/build/outputs/apk/release/app-release.apk {{dist}}/OpenRemote.apk
+
 clean:
     rm -rf {{dist}}
     

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Connect -->
+    <string name="connect_title">Адрес компьютера, где запущен сервер</string>
+    <string name="address">Адрес</string>
+    <string name="port">Порт</string>
+    <string name="connect">Подключиться</string>
+    <string name="scan_code">Сканировать код</string>
+    <string name="scan_hint">Наведите камеру на код на компьютере</string>
+    <string name="enter_manually">Ввести адрес</string>
+    <string name="camera_denied">Нет доступа к камере. Введите адрес вручную.</string>
+    <string name="allow_camera">Разрешить камеру</string>
+
+    <!-- Link state -->
+    <string name="offline">Нет связи</string>
+    <string name="connecting">Подключение…</string>
+    <string name="connected_to">Подключено к %1$s</string>
+    <string name="connected_pad">Подключено к %1$s · свой геймпад</string>
+    <string name="taken">Геймпад занят другим телефоном</string>
+    <string name="bad_address">Неверный адрес</string>
+    <string name="need_address">Укажите адрес и порт</string>
+    <string name="disconnect">Отключиться</string>
+
+    <!-- Shell -->
+    <string name="home">Главная</string>
+    <string name="settings">Настройки</string>
+    <string name="presets">Пресеты</string>
+    <string name="my_layouts">Мои раскладки</string>
+    <string name="no_layouts">Здесь появятся созданные и импортированные раскладки.</string>
+    <string name="play">Играть</string>
+    <string name="edit">Изменить</string>
+    <string name="export_layout">Экспорт</string>
+    <string name="import_layout">Импорт</string>
+    <string name="import_failed">Этот файл не является раскладкой.</string>
+    <string name="new_layout">Новая раскладка</string>
+    <string name="layout_name">Название</string>
+    <string name="create">Создать</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_layout">Удалить раскладку?</string>
+    <string name="untitled">Раскладка</string>
+    <string name="preset_standard">Стандарт</string>
+    <string name="preset_lefty">Левша</string>
+
+    <!-- Settings -->
+    <string name="haptics">Виброотклик</string>
+    <string name="haptics_summary">Вибрация при нажатии</string>
+    <string name="intensity">Интенсивность</string>
+    <string name="timeouts">Таймауты</string>
+    <string name="confirm_hold">Выход и раскладка</string>
+    <string name="stick_click">L3 и R3</string>
+    <string name="sticks">Стики</string>
+    <string name="deadzone">Мёртвая зона</string>
+    <string name="stick_curve">Кривая</string>
+    <string name="reset_defaults">Сбросить настройки</string>
+    <string name="reset_defaults_question">Вернуть стандартные виброотклик, таймауты и настройки стиков?</string>
+    <string name="reset">Сбросить</string>
+    <string name="seconds">%1$.2f с</string>
+
+    <!-- Pad -->
+    <string name="close">Удерживайте, чтобы закрыть</string>
+    <string name="done">Удерживайте, чтобы завершить</string>
+    <string name="add_control">Добавить</string>
+    <string name="remove_control">Убрать</string>
+    <string name="reset_layout">Сбросить</string>
+    <string name="edit_hint">Тяните, чтобы сдвинуть. Нажмите на элемент, чтобы изменить размер или убрать.</string>
+    <string name="left_stick">Левый стик</string>
+    <string name="right_stick">Правый стик</string>
+    <string name="dpad">Крестовина</string>
+</resources>

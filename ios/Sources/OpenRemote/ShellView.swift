@@ -23,12 +23,13 @@ struct MainShell: View {
     @State private var exportName = "layout"
     @State private var importing = false
     @State private var importFailed = false
-    @AppStorage("haptics") private var haptics = true
-    @AppStorage("hapticIntensity") private var hapticIntensity = 1.0
-    @AppStorage("holdTimeout") private var holdTimeout = 0.7
-    @AppStorage("stickClickTimeout") private var stickClickTimeout = 0.16
-    @AppStorage("stickDeadzone") private var stickDeadzone = 0.14
-    @AppStorage("stickCurve") private var stickCurve = 1.0
+    @AppStorage(AppSettings.Key.haptics) private var haptics = AppSettings.Default.haptics
+    @AppStorage(AppSettings.Key.hapticIntensity) private var hapticIntensity = AppSettings.Default.hapticIntensity
+    @AppStorage(AppSettings.Key.holdTimeout) private var holdTimeout = AppSettings.Default.holdTimeout
+    @AppStorage(AppSettings.Key.stickClickTimeout) private var stickClickTimeout = AppSettings.Default.stickClickTimeout
+    @AppStorage(AppSettings.Key.stickDeadzone) private var stickDeadzone = AppSettings.Default.stickDeadzone
+    @AppStorage(AppSettings.Key.stickCurve) private var stickCurve = AppSettings.Default.stickCurve
+    @State private var confirmReset = false
 
     var body: some View {
         Group {
@@ -199,9 +200,28 @@ struct MainShell: View {
                 } header: {
                     Text(L10n.sticks)
                 }
+                Section {
+                    Button(L10n.resetDefaults, role: .destructive) {
+                        confirmReset = true
+                    }
+                    .frame(maxWidth: .infinity)
+                }
             }
             .listStyle(.insetGrouped)
+            .confirmationDialog(L10n.resetDefaultsQuestion, isPresented: $confirmReset, titleVisibility: .visible) {
+                Button(L10n.resetDefaults, role: .destructive, action: resetSettings)
+                Button(L10n.cancel, role: .cancel) {}
+            }
         }
+    }
+
+    private func resetSettings() {
+        haptics = AppSettings.Default.haptics
+        hapticIntensity = AppSettings.Default.hapticIntensity
+        holdTimeout = AppSettings.Default.holdTimeout
+        stickClickTimeout = AppSettings.Default.stickClickTimeout
+        stickDeadzone = AppSettings.Default.stickDeadzone
+        stickCurve = AppSettings.Default.stickCurve
     }
 
     private func card(

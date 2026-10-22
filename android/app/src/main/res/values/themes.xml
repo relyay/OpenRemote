@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Compose draws everything. This theme only colors the window before the first frame. -->
+    <style name="Theme.OpenRemote" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/window</item>
+    </style>
+    <color name="window">#FFFDF8FD</color>
+</resources>

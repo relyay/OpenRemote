@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name" translatable="false">OpenRemote</string>
+
+    <!-- Connect -->
+    <string name="connect_title">Address of the computer running the server</string>
+    <string name="address">Address</string>
+    <string name="port">Port</string>
+    <string name="connect">Connect</string>
+    <string name="scan_code">Scan code</string>
+    <string name="scan_hint">Point the camera at the code on the computer</string>
+    <string name="enter_manually">Enter address</string>
+    <string name="camera_denied">Camera access is off. Enter the address instead.</string>
+    <string name="allow_camera">Allow camera</string>
+
+    <!-- Link state -->
+    <string name="offline">Offline</string>
+    <string name="connecting">Connecting…</string>
+    <string name="connected_to">Connected to %1$s</string>
+    <string name="connected_pad">Connected to %1$s · controller</string>
+    <string name="taken">The pad is in use on another phone</string>
+    <string name="bad_address">Invalid address</string>
+    <string name="need_address">Enter an address and port</string>
+    <string name="disconnect">Disconnect</string>
+
+    <!-- Shell -->
+    <string name="home">Home</string>
+    <string name="settings">Settings</string>
+    <string name="presets">Presets</string>
+    <string name="my_layouts">My layouts</string>
+    <string name="no_layouts">Layouts you create or import appear here.</string>
+    <string name="play">Play</string>
+    <string name="edit">Edit</string>
+    <string name="export_layout">Export</string>
+    <string name="import_layout">Import</string>
+    <string name="import_failed">That file is not a layout.</string>
+    <string name="new_layout">New layout</string>
+    <string name="layout_name">Name</string>
+    <string name="create">Create</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete">Delete</string>
+    <string name="delete_layout">Delete layout?</string>
+    <string name="untitled">Layout</string>
+    <string name="preset_standard">Standard</string>
+    <string name="preset_lefty">Lefty</string>
+
+    <!-- Settings -->
+    <string name="haptics">Haptics</string>
+    <string name="haptics_summary">Vibrate when a control is pressed</string>
+    <string name="intensity">Intensity</string>
+    <string name="timeouts">Timeouts</string>
+    <string name="confirm_hold">Exit and layout</string>
+    <string name="stick_click">L3 and R3</string>
+    <string name="sticks">Sticks</string>
+    <string name="deadzone">Dead zone</string>
+    <string name="stick_curve">Curve</string>
+    <string name="reset_defaults">Reset settings</string>
+    <string name="reset_defaults_question">Restore the default haptics, timeouts and stick tuning?</string>
+    <string name="reset">Reset</string>
+    <string name="seconds">%1$.2f s</string>
+
+    <!-- Pad -->
+    <string name="close">Hold to close</string>
+    <string name="done">Hold to finish</string>
+    <string name="add_control">Add</string>
+    <string name="remove_control">Remove</string>
+    <string name="reset_layout">Reset</string>
+    <string name="edit_hint">Drag to move. Tap a control to resize or remove it.</string>
+    <string name="left_stick">Left stick</string>
+    <string name="right_stick">Right stick</string>
+    <string name="dpad">D-pad</string>
+</resources>

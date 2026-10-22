@@ -302,9 +302,9 @@ enum Haptics {
     @MainActor
     static func play() {
         let defaults = UserDefaults.standard
-        let enabled = defaults.object(forKey: "haptics") as? Bool ?? true
+        let enabled = defaults.object(forKey: AppSettings.Key.haptics) as? Bool ?? AppSettings.Default.haptics
         guard enabled else { return }
-        let raw = defaults.object(forKey: "hapticIntensity") as? Double ?? 1
+        let raw = defaults.object(forKey: AppSettings.Key.hapticIntensity) as? Double ?? AppSettings.Default.hapticIntensity
         let amount = Float(min(1, max(0, raw)))
         guard amount > 0.02 else { return }
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
@@ -337,24 +337,44 @@ enum Haptics {
     }
 }
 
+/// Tuning shared by the pad and the settings tab. The settings tab reads the
+/// same keys through @AppStorage, so its defaults come from `Default` as well.
 enum AppSettings {
+    enum Key {
+        static let haptics = "haptics"
+        static let hapticIntensity = "hapticIntensity"
+        static let holdTimeout = "holdTimeout"
+        static let stickClickTimeout = "stickClickTimeout"
+        static let stickDeadzone = "stickDeadzone"
+        static let stickCurve = "stickCurve"
+    }
+
+    enum Default {
+        static let haptics = true
+        static let hapticIntensity = 1.0
+        static let holdTimeout = 0.7
+        static let stickClickTimeout = 0.16
+        static let stickDeadzone = 0.14
+        static let stickCurve = 1.0
+    }
+
     static var holdTimeout: TimeInterval {
-        let raw = UserDefaults.standard.object(forKey: "holdTimeout") as? Double ?? 0.7
+        let raw = UserDefaults.standard.object(forKey: Key.holdTimeout) as? Double ?? Default.holdTimeout
         return min(2, max(0.2, raw))
     }
 
     static var stickClickTimeout: TimeInterval {
-        let raw = UserDefaults.standard.object(forKey: "stickClickTimeout") as? Double ?? 0.16
+        let raw = UserDefaults.standard.object(forKey: Key.stickClickTimeout) as? Double ?? Default.stickClickTimeout
         return min(0.8, max(0.05, raw))
     }
 
     static var stickDeadzone: Double {
-        let raw = UserDefaults.standard.object(forKey: "stickDeadzone") as? Double ?? 0.14
+        let raw = UserDefaults.standard.object(forKey: Key.stickDeadzone) as? Double ?? Default.stickDeadzone
         return min(0.5, max(0, raw))
     }
 
     static var stickCurve: Double {
-        let raw = UserDefaults.standard.object(forKey: "stickCurve") as? Double ?? 1
+        let raw = UserDefaults.standard.object(forKey: Key.stickCurve) as? Double ?? Default.stickCurve
         return min(3, max(1, raw))
     }
 }

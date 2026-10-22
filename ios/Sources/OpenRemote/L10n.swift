@@ -56,6 +56,8 @@ enum L10n {
     static var haptics: String { t("Haptics", "Виброотклик") }
     static var intensity: String { t("Intensity", "Интенсивность") }
     static var timeouts: String { t("Timeouts", "Таймауты") }
+    static var resetDefaults: String { t("Reset settings", "Сбросить настройки") }
+    static var resetDefaultsQuestion: String { t("Restore the default haptics, timeouts and stick tuning?", "Вернуть стандартные виброотклик, таймауты и настройки стиков?") }
     static var confirmHold: String { t("Exit and layout", "Выход и раскладка") }
     static var stickClick: String { t("L3 and R3", "L3 и R3") }
     static var sticks: String { t("Sticks", "Стики") }
