@@ -19,7 +19,7 @@ ios:
     cp -f ios/xtool/OpenRemote.ipa {{dist}}/OpenRemote.ipa
 
 android:
-    cd android && ./gradlew assembleRelease
+    cd android && ANDROID_HOME="${ANDROID_HOME:-$HOME/Android/Sdk}" ./gradlew assembleRelease
     mkdir -p {{dist}}
     cp -f android/app/build/outputs/apk/release/app-release.apk {{dist}}/OpenRemote.apk
 

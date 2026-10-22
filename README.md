@@ -19,7 +19,7 @@ The same design applies to every platform, but only Linux can present a gamepad 
 
 ## Build
 
-Go builds the host. The iOS app needs [xtool](https://github.com/xtool-org/xtool). The Android app needs JDK 17 or later and the Android SDK, found through `ANDROID_HOME` or `android/local.properties`; the Gradle wrapper downloads the rest. Results go to `dist/`.
+Go builds the host. The iOS app needs [xtool](https://github.com/xtool-org/xtool). The Android app needs JDK 17 or later and the Android SDK, found through `ANDROID_HOME` (`just android` falls back to `~/Android/Sdk`) or `android/local.properties`; the Gradle wrapper downloads the rest. Results go to `dist/`.
 
 | Command | File |
 | --- | --- |
