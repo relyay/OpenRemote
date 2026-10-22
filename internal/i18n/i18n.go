@@ -1,5 +1,6 @@
 // Package i18n picks English or Russian from the process locale.
 // It follows LC_ALL, then LC_MESSAGES, then LANG, the same order as libc.
+// When none is set, as is usual on Windows, it asks the system.
 package i18n
 
 import (
@@ -24,7 +25,7 @@ func Russian() bool {
 		}
 		return isRussianTag(value)
 	}
-	return false
+	return systemRussian()
 }
 
 func isRussianTag(value string) bool {

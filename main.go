@@ -17,7 +17,6 @@ import (
 	"openremote/internal/i18n"
 	"openremote/internal/pad"
 	"openremote/internal/server"
-	"openremote/internal/uinput"
 )
 
 func main() {
@@ -28,7 +27,7 @@ func main() {
 	}
 	flag.Parse()
 
-	dev, err := uinput.Create()
+	dev, detail, err := openDevice()
 	if err != nil {
 		log.Fatal(explain(err))
 	}
@@ -42,7 +41,7 @@ func main() {
 
 	ln, err := net.Listen("tcp4", *addr)
 	if err != nil {
-		if errors.Is(err, syscall.EADDRINUSE) {
+		if portInUse(err) {
 			log.Fatalf(i18n.T("port in use: %s", "порт занят: %s"), *addr)
 		}
 		log.Fatal(err)
@@ -68,7 +67,7 @@ func main() {
 		}
 	}()
 
-	printBanner(*addr, dev)
+	printBanner(*addr, detail)
 	log.SetFlags(log.Ltime)
 
 	sig := make(chan os.Signal, 1)
@@ -82,6 +81,12 @@ func main() {
 	_ = httpServer.Shutdown(ctx)
 }
 
+// device is the virtual Xbox 360 pad of this OS: uinput on Linux, ViGEmBus on Windows.
+type device interface {
+	pad.Writer
+	Close() error
+}
+
 type noDelayListener struct{ *net.TCPListener }
 
 func (l noDelayListener) Accept() (net.Conn, error) {
@@ -93,7 +98,7 @@ func (l noDelayListener) Accept() (net.Conn, error) {
 	return conn, nil
 }
 
-func printBanner(addr string, dev *uinput.Device) {
+func printBanner(addr, detail string) {
 	_, port, err := net.SplitHostPort(addr)
 	if err != nil {
 		port = "1337"
@@ -113,28 +118,12 @@ func printBanner(addr string, dev *uinput.Device) {
 	}
 	fmt.Println()
 	line := i18n.T("Device: Microsoft X-Box 360 pad", "Устройство: Microsoft X-Box 360 pad")
-	if dev.EventPath != "" {
-		line += "  " + dev.EventPath
-	}
-	if dev.JSPath != "" {
-		line += "  " + dev.JSPath
+	if detail != "" {
+		line += "  " + detail
 	}
 	fmt.Println(line)
 	fmt.Println(i18n.T("Listening on", "Слушает"), addr)
 	fmt.Println()
-}
-
-func explain(err error) string {
-	switch {
-	case errors.Is(err, uinput.ErrDeviceNode):
-		return i18n.T("no /dev/uinput: run sudo modprobe uinput", "нет /dev/uinput: выполните sudo modprobe uinput")
-	case errors.Is(err, uinput.ErrPermission):
-		return i18n.T("no access to /dev/uinput: run sudo ./openremote", "нет доступа к /dev/uinput: запустите sudo ./openremote")
-	case errors.Is(err, uinput.ErrUnsupported):
-		return i18n.T("virtual gamepad exists only on Linux", "виртуальный геймпад есть только в Linux")
-	default:
-		return err.Error()
-	}
 }
 
 func lanIPv4() []string {
@@ -177,7 +166,11 @@ func phoneIface(ifi net.Interface) bool {
 	case strings.HasPrefix(name, "docker"),
 		strings.HasPrefix(name, "br-"),
 		strings.HasPrefix(name, "veth"),
-		strings.HasPrefix(name, "virbr"):
+		strings.HasPrefix(name, "virbr"),
+		// Windows: the WSL and Hyper-V NAT switches and VirtualBox host-only adapters.
+		strings.HasPrefix(name, "vEthernet (WSL"),
+		name == "vEthernet (Default Switch)",
+		strings.HasPrefix(name, "VirtualBox Host-Only"):
 		return false
 	default:
 		return true

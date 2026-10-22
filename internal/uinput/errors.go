@@ -10,6 +10,3 @@ var ErrDeviceNode = errors.New("uinput node missing")
 
 // ErrPermission is returned when the process cannot open /dev/uinput.
 var ErrPermission = errors.New("uinput permission")
-
-// ErrUnsupported is returned on systems without a virtual-pad backend.
-var ErrUnsupported = errors.New("virtual pad is only available on linux")

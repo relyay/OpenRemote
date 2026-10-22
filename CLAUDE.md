@@ -6,7 +6,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 OpenRemote turns a phone into a wireless virtual Xbox 360 controller. Three independent codebases share one wire protocol:
 
-- **Host** (Go, repo root + `internal/`): creates a virtual pad through `/dev/uinput` and receives input from the phone. Only Linux has a pad backend; Windows/macOS build but exit (`internal/uinput/device_stub.go`).
+- **Host** (Go, repo root + `internal/`): creates a virtual pad and receives input from the phone. Linux uses `/dev/uinput` (`internal/uinput`), Windows uses the ViGEmBus driver (`internal/vigem`), macOS builds but exits. The backend is picked in `pad_linux.go` / `pad_windows.go` / `pad_other.go`, which also hold the OS-specific error texts.
 - **iOS controller** (`ios/`, SwiftUI, iOS 26, built with xtool on Linux).
 - **Android controller** (`android/`, Kotlin, Jetpack Compose + Material 3 only, minSdk 26).
 
@@ -23,7 +23,7 @@ just android          # gradlew assembleRelease; ANDROID_HOME defaults to ~/Andr
 Host:
 
 ```bash
-go vet ./...
+go vet ./...                 # also with GOOS=windows and GOOS=darwin
 go test -race ./...
 go test ./internal/protocol -run TestBinaryRoundTrip -v   # single test
 ./dist/openremote-linux-amd64 -addr 0.0.0.0:1337           # needs writable /dev/uinput or sudo
@@ -49,6 +49,8 @@ Defined in `internal/protocol/protocol.go`; both phone apps must stay byte-compa
 - **UDP on the same port**: `uint16 seq` + frame. Out-of-order packets are dropped by sequence (wraparound via `int16(seq-last)`). While a datagram arrived in the last 300 ms, WebSocket frames are ignored (`udpFresh`), so clients keep a UDP heartbeat running.
 - `internal/pad` holds every digital edge for at least 16 ms (`minPulse`) so a quick tap is not lost by games that sample once per frame.
 - TCP_NODELAY is set on accept; Nagle would merge a tap's press and release.
+
+`internal/vigem` talks to ViGEmBus with raw `DeviceIoControl` (stdlib `syscall`, no cgo, no ViGEmClient DLL), mirroring `ViGEmClient.cpp`: check version, plug in on the first free serial, wait until ready, then submit full `XUSB_REPORT`s. XInput's stick Y is up-positive, the protocol's is down-positive, so `ReportFrom` flips it. The IOCTL codes and struct layouts live in the untagged `bus.go` so `go test` checks them on Linux; only the I/O is in `device_windows.go`. There is no Windows CI or Wine here: changes to the Windows path are verified with `GOOS=windows go vet ./...` and `just windows` only.
 
 The host prints a QR code of `openremote://ip:port`; both apps parse that, `ws://`/`http(s)://` URLs, or bare `ip:port`.
 
@@ -77,7 +79,7 @@ Things that need several files to understand:
 
 ## Conventions
 
-- User-facing text is English and Russian. Go uses `i18n.T(en, ru)` (locale from `LC_ALL`/`LC_MESSAGES`/`LANG`); iOS uses `L10n`; Android uses `values/` and `values-ru/` string resources.
+- User-facing text is English and Russian. Go uses `i18n.T(en, ru)` (locale from `LC_ALL`/`LC_MESSAGES`/`LANG`, then the Windows display language); iOS uses `L10n`; Android uses `values/` and `values-ru/` string resources.
 - App ID / bundle ID is `ru.relya.openremote` on both platforms. Bump the version in both `ios/Info.plist` and `android/app/build.gradle.kts` (`versionName`, and increment `versionCode`).
 - Android release APKs are signed with the debug key for now; release signing is planned for 1.0.
 - `PKGBUILD` packages the host only, from a `v<pkgver>` git tag.
